@@ -9,6 +9,10 @@ app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+app.get('/', function(request, response) {
+    response.render('pages/404');
+});
+
 app.get('/:checkup_id', function(request, response) {
     var checkup_id = request.params.checkup_id;
     response.render('pages/index');
