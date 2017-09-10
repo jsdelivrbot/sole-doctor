@@ -33,6 +33,14 @@
             <h4>Additional comments</h4>
             <textarea name="comments" id="comments" class="form-control" rows="5"></textarea>
             <br>
+            <h4>Password</h4>
+            <input type="password" class="form-control" id="password"><br>
+            <div class="alert alert-danger fade in hidden" role="alert" id="password-alert">
+                <p>Incorrect password</p>
+            </div>
+            <div class="alert alert-success fade in hidden" role="alert" id="success-alert">
+                <p>Thank you for your feedback!</p>
+            </div>
             <input class="btn btn-default" type="button" value="Submit" onclick="onSubmit();">
         </form>
     </div>
@@ -53,10 +61,15 @@
 
     <script>
         function onSubmit() {
+            var email = "doctor@example.com";
+
             var actions = [],
                 actionOptions = document.getElementsByClassName('action'),
                 actionsCheckedCount = 0,
-                comments = document.getElementById('comments').value;
+                checkupId = parseInt(document.getElementById('checkup-id').innerHTML),
+                comments = document.getElementById('comments').value,
+                password = document.getElementById('password').value;
+
             for (var i = 0; i < actionOptions.length; i++) {
                 if (actionOptions[i].checked) {
                     actionsCheckedCount++;
@@ -67,26 +80,22 @@
                 });
             }
             if (actionsCheckedCount > 0) {
-                updateCheckupFeedback(actions, comments);
+                firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
+                    showSuccess();
+                    updateCheckupFeedback(actions, comments, checkupId);
+                }).catch(function(error) {
+                    console.log(error.code, error.message);
+                    document.getElementById('password-alert').classList.remove('hidden');
+                });
             }
         }
 
-        function updateCheckupFeedback(actions, comments) {
-            // TODO Remove hard-coded values, need to change permissions
-            var email = "potsui7@gmail.com";
-            var password = "password";
+        function showSuccess() {
+            document.getElementById('password-alert').classList.add('hidden');
+            document.getElementById('success-alert').classList.remove('hidden');
+        }
 
-            var checkupId = parseInt(document.getElementById('checkup-id').innerHTML);
-
-            console.log(checkupId);
-            console.log(actions);
-            console.log(comments);
-
-            firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                console.log(errorCode, errorMessage);
-            });
+        function updateCheckupFeedback(actions, comments, checkupId) {
             firebase.database().ref('checkups/' + checkupId).update({
                 actions: actions,
                 comments: comments
