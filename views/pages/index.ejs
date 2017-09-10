@@ -83,6 +83,7 @@
                 firebase.auth().signInWithEmailAndPassword(email, password).then(function() {
                     showSuccess();
                     updateCheckupFeedback(actions, comments, checkupId);
+                    sendEmailNotification(actions, comments, checkupId);
                 }).catch(function(error) {
                     console.log(error.code, error.message);
                     document.getElementById('password-alert').classList.remove('hidden');
@@ -99,6 +100,26 @@
             firebase.database().ref('checkups/' + checkupId).update({
                 actions: actions,
                 comments: comments
+            });
+        }
+
+        function sendEmailNotification(actions, comments, checkupId) {
+            firebase.database().ref('checkups/' + checkupId).once('value').then(function(checkupSnapshot) {
+                var patientId = checkupSnapshot.val().user_id;
+                firebase.database().ref('user/' + patientId).once('value').then(function(patientSnapshot) {
+                    var patientEmail = patientSnapshot.val().email;
+                    console.log(patientEmail);
+
+                    // Make POST request to send email
+                    var httpRequest = new XMLHttpRequest();
+                    httpRequest.open('POST', '/email/' + checkupId);
+                    httpRequest.setRequestHeader("Content-Type", "application/json");
+                    httpRequest.send(JSON.stringify({
+                        "actions": actions, 
+                        "comments": comments,
+                        "patientEmail": patientEmail
+                    }));
+                });
             });
         }
     </script>
