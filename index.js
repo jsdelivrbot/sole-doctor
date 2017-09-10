@@ -15,7 +15,7 @@ app.get('/', function(request, response) {
 
 app.get('/:checkup_id', function(request, response) {
     var checkup_id = request.params.checkup_id;
-    response.render('pages/index');
+    response.render('pages/index', {checkup_id: checkup_id});
 });
 
 app.listen(app.get('port'), function() {

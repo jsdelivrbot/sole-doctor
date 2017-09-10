@@ -7,14 +7,86 @@
 <body>
     <div class="jumbotron text-center">
         <h2>Please input your professional opinion.</h2>
+        <h4>Checkup ID: <span id="checkup-id"><%- checkup_id %></span></h4>
     </div>
     <div class="container">
-        <form>
+        <form class="form-group">
             Recommended action:<br>
-            <input type="text" name="action"><br>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" class="action" name="action" value="hospital">
+                    Go to a hospital immediately
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" class="action" name="action" value="physical-asap">
+                    Schedule a physical checkup as soon as possible
+                </label>
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" class="action" name="action" value="physical-month">
+                    Schedule a physical checkup in the next month<br>
+                </label>
+            </div>
             Additional comments:<br>
-            <input type="text" name="comments">
+            <input type="textarea" name="comments" id="comments">
+            <div onclick="onSubmit();">Submit</div>
         </form>
     </div>
+
+    <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyAAfTBK-hBUOG7t90LmQdnH8ZcvXBBQkOg",
+            authDomain: "medhacks2017.firebaseapp.com",
+            databaseURL: "https://medhacks2017.firebaseio.com",
+            projectId: "medhacks2017",
+            storageBucket: "medhacks2017.appspot.com",
+            messagingSenderId: "557158205606"
+        };
+        firebase.initializeApp(config);
+    </script>
+
+    <script>
+        function onSubmit() {
+            updateCheckupFeedback();
+        }
+        
+        function updateCheckupFeedback() {
+            // TODO Remove hard-coded values, need to change permissions
+            var email = "potsui7@gmail.com";
+            var password = "password";
+
+            var checkupId = parseInt(document.getElementById('checkup-id').innerHTML);
+
+            // Get form values
+            var actions = [];
+            var actionOptions = document.getElementsByClassName('action');
+            for (var i = 0; i < actionOptions.length; i++) {
+                actions.push({
+                    action: actionOptions[i].value,
+                    selected: actionOptions[i].checked
+                });
+            }
+            var comments = document.getElementById('comments').value;
+
+            console.log(checkupId);
+            console.log(actions);
+            console.log(comments);
+
+            firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                console.log(errorCode, errorMessage);
+            });
+            firebase.database().ref('checkups/' + checkupId).update({
+                actions: actions,
+                comments: comments
+            });
+        }
+    </script>
 </body>
 </html>
