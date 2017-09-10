@@ -11,7 +11,7 @@
     </div>
     <div class="container">
         <form class="form-group">
-            Recommended action:<br>
+            <h4>Recommended action</h4>
             <div class="checkbox">
                 <label>
                     <input type="checkbox" class="action" name="action" value="hospital">
@@ -30,9 +30,10 @@
                     Schedule a physical checkup in the next month<br>
                 </label>
             </div>
-            Additional comments:<br>
-            <input type="textarea" name="comments" id="comments">
-            <div onclick="onSubmit();">Submit</div>
+            <h4>Additional comments</h4>
+            <textarea name="comments" id="comments" class="form-control" rows="5"></textarea>
+            <br>
+            <input class="btn btn-default" type="button" value="Submit" onclick="onSubmit();">
         </form>
     </div>
 
