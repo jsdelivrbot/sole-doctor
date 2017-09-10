@@ -46,20 +46,10 @@
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
-    <script>
-        // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyAAfTBK-hBUOG7t90LmQdnH8ZcvXBBQkOg",
-            authDomain: "medhacks2017.firebaseapp.com",
-            databaseURL: "https://medhacks2017.firebaseio.com",
-            projectId: "medhacks2017",
-            storageBucket: "medhacks2017.appspot.com",
-            messagingSenderId: "557158205606"
-        };
-        firebase.initializeApp(config);
-    </script>
+    <script src="/firebase-config.js"></script>
 
     <script>
+        firebase.initializeApp(config);
         function onSubmit() {
             var email = "doctor@example.com";
 
