@@ -53,26 +53,30 @@
 
     <script>
         function onSubmit() {
-            updateCheckupFeedback();
-        }
-        
-        function updateCheckupFeedback() {
-            // TODO Remove hard-coded values, need to change permissions
-            var email = "potsui7@gmail.com";
-            var password = "password";
-
-            var checkupId = parseInt(document.getElementById('checkup-id').innerHTML);
-
-            // Get form values
-            var actions = [];
-            var actionOptions = document.getElementsByClassName('action');
+            var actions = [],
+                actionOptions = document.getElementsByClassName('action'),
+                actionsCheckedCount = 0,
+                comments = document.getElementById('comments').value;
             for (var i = 0; i < actionOptions.length; i++) {
+                if (actionOptions[i].checked) {
+                    actionsCheckedCount++;
+                }
                 actions.push({
                     action: actionOptions[i].value,
                     selected: actionOptions[i].checked
                 });
             }
-            var comments = document.getElementById('comments').value;
+            if (actionsCheckedCount > 0) {
+                updateCheckupFeedback(actions, comments);
+            }
+        }
+
+        function updateCheckupFeedback(actions, comments) {
+            // TODO Remove hard-coded values, need to change permissions
+            var email = "potsui7@gmail.com";
+            var password = "password";
+
+            var checkupId = parseInt(document.getElementById('checkup-id').innerHTML);
 
             console.log(checkupId);
             console.log(actions);
